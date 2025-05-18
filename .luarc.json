@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "Lua.diagnostics.globals": [
+    "_",
+    "arg1",
+    "ChatFrame_AddMessageEventFilter",
+    "event",
+    "getn",
+    "NUM_CHAT_WINDOWS",
+    "strtrim",
+    "this",
+    "time"
+  ],
+  "Lua.runtime.version": "Lua 5.1",
+  "Lua.workspace.checkThirdParty": false,
+  "Lua.workspace.ignoreDir": [
+    "libs"
+  ],
+  "type.inferParamType": true,
+  "workspace.library": [ "../wow-api-type-definitions" ],
+  "Lua.diagnostics.strict": true,
+  "diagnostics.disable": [],
+  "Lua.hint.enable": true
+}
