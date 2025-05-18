@@ -94,7 +94,7 @@ function M.new()
 	end
 
 	---@param character AltMap
-	local function send_character( character)
+	local function send_character( character )
 		broadcast( MessageCommand.SendCharacter, character )
 	end
 
@@ -122,7 +122,9 @@ function M.new()
 			--
 			-- Receive alts
 			--
-			m.db.characters = data
+			for main, cdata in pairs( data ) do
+				m.db.characters[ main ] = cdata
+			end
 			m.db.last_update = time()
 		elseif command == MessageCommand.Ping then
 			--
