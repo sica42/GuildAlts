@@ -11,7 +11,9 @@ local MessageCommand = {
 	SendAlts = "SALTS",
 	RequestAlts = "RALTS",
 	Ping = "PING",
-	Pong = "PONG"
+	Pong = "PONG",
+	VersionCheck = "VERC",
+	Version = "VER"
 }
 
 ---@alias MessageCommand
@@ -20,6 +22,8 @@ local MessageCommand = {
 ---| "RALTS"
 ---| "PING"
 ---| "PONG"
+---| "VERC"
+---| "VER"
 
 ---@alias CharacterName string  -- Max 12 characters (WoW limitation)
 
@@ -49,7 +53,9 @@ local MessageCommand = {
 
 ---@class MessageHandler
 ---@field send_character fun( character: AltMap )
+---@field send_alts fun()
 ---@field request_alts fun()
+---@field version_check fun()
 
 local M = {}
 
@@ -68,8 +74,10 @@ function M.new()
 
 	local pinging = false
 	local best_ping = nil
+	local alts_sent = false
 	local var_names = {
 		lu = "last_update",
+		c = "count",
 	}
 	setmetatable( var_names, { __index = function( _, key ) return key end } );
 
@@ -98,10 +106,22 @@ function M.new()
 		broadcast( MessageCommand.SendCharacter, character )
 	end
 
+	local function send_alts()
+		broadcast( MessageCommand.SendAlts, m.db.characters )
+	end
+
 	local function request_alts()
 		pinging = true
+		alts_sent = false
 		best_ping = nil
-		broadcast( MessageCommand.Ping )
+
+		broadcast( MessageCommand.Ping, {
+			c = getn( m.db.characters )
+		} )
+	end
+
+	local function version_check()
+		broadcast( MessageCommand.VersionCheck )
 	end
 
 	---@param command string
@@ -117,7 +137,7 @@ function M.new()
 			--
 			-- Receive request for all alts
 			--
-			broadcast( MessageCommand.SendAlts, m.db.characters )
+			send_alts()
 		elseif command == MessageCommand.SendAlts then
 			--
 			-- Receive alts
@@ -131,7 +151,8 @@ function M.new()
 			-- Recive ping
 			--
 			broadcast( MessageCommand.Pong, {
-				lu = m.db.last_update
+				lu = m.db.last_update,
+				c = getn( m.db.characters )
 			} )
 		elseif command == MessageCommand.Pong and pinging then
 			--
@@ -140,17 +161,39 @@ function M.new()
 			if not best_ping or (data and data.last_update > best_ping.last_update) then
 				best_ping = {
 					player = sender,
+					count = data.count,
 					last_update = data.last_update or 0
 				}
+			end
+
+			if data and data.count < getn(m.db.characters) and not alts_sent then
+				alts_sent = true
+				send_alts()
 			end
 
 			if ace_timer:TimeLeft( M[ "ping_timer" ] ) == 0 then
 				M[ "ping_timer" ] = ace_timer.ScheduleTimer( M, function()
 					if pinging then
 						pinging = false
-						broadcast( MessageCommand.RequestAlts, { player = best_ping.player } )
+						if best_ping.count and best_ping.count ~= getn( m.db.characters ) then
+							broadcast( MessageCommand.RequestAlts, { player = best_ping.player } )
+						else
+							m.debug( "Alt list is already up to date." )
+						end
 					end
-				end, 1 )
+				end, 2 )
+			end
+		elseif command == MessageCommand.VersionCheck then
+			--
+			-- Receive version request
+			--
+			broadcast( MessageCommand.Version, { requester = sender, version = m.version, class = m.player_class } )
+		elseif command == MessageCommand.Version then
+			--
+			-- Receive version
+			--
+			if data.requester == m.player then
+				m.info( string.format( "%s [v%s]", m.colorize_player_by_class( sender, data.class ), data.version ), true )
 			end
 		end
 	end
@@ -180,7 +223,9 @@ function M.new()
 	---@type MessageHandler
 	return {
 		send_character = send_character,
-		request_alts = request_alts
+		send_alts = send_alts,
+		request_alts = request_alts,
+		version_check = version_check
 	}
 end
 

@@ -6,28 +6,40 @@ local M = GuildAlts
 ---@param str string
 ---@return string|nil
 function M.normalize_and_validate_name( str )
-	if string.len(str) > 12 then return nil end
+	if string.len( str ) > 12 then return nil end
 
-	local normalized = string.upper(string.sub(str, 1, 1)) .. string.lower(string.sub(str, 2))
+	local normalized = string.upper( string.sub( str, 1, 1 ) ) .. string.lower( string.sub( str, 2 ) )
 
-	if string.find(normalized, "^[A-Z][a-z]*$") then
-    return normalized
-  end
+	if string.find( normalized, "^[A-Z][a-z]*$" ) then
+		return normalized
+	end
 
-  return nil
+	return nil
 end
 
---- @param hex string
---- @return number r
---- @return number g
---- @return number b
---- @return number a
+---@param hex string
+---@return number r
+---@return number g
+---@return number b
+---@return number a
 function M.hex_to_rgba( hex )
 	local r, g, b, a = string.match( hex, "^#?(%x%x)(%x%x)(%x%x)(%x?%x?)$" )
 
 	r, g, b = tonumber( r, 16 ) / 255, tonumber( g, 16 ) / 255, tonumber( b, 16 ) / 255
 	a = a ~= "" and tonumber( a, 16 ) / 255 or 1
 	return r, g, b, a
+end
+
+---@param name string
+---@param class string
+---@return string
+function M.colorize_player_by_class( name, class )
+	if not class then return name end
+	local color = RAID_CLASS_COLORS[ string.upper( class ) ]
+	if not color.colorStr then
+		color.colorStr = string.format( "ff%02x%02x%02x", color.r * 255, color.g * 255, color.b * 255 )
+	end
+	return "|c" .. color.colorStr .. name .. "|r"
 end
 
 ---@param message string

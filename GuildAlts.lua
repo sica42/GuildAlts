@@ -31,6 +31,7 @@ function GuildAlts.events:ADDON_LOADED()
 	m.msg = m.MessageHandler.new()
 
 	m.player = UnitName( "player" )
+	m.player_class = UnitClass( "player" )
 	m.offset = 0
 	m.selected = nil
 	m.frame_items = {}
@@ -40,7 +41,7 @@ function GuildAlts.events:ADDON_LOADED()
 	m.db = GuildAltsDB
 	m.db.characters = m.db.characters or {}
 
-	if not m.db.last_update or m.db.last_update < time() - 172800 then
+	if not m.db.last_update or m.db.last_update < time() - 3600 then
 		m.msg.request_alts()
 	end
 
@@ -61,6 +62,24 @@ function GuildAlts.events:ADDON_LOADED()
 			else
 				m.info( "Debug is disabled" )
 			end
+			return
+		end
+
+		if args == "refresh" or args == "r" then
+			m.info( "Refreshing alt list from other guild members." )
+			m.msg.request_alts()
+			return
+		end
+
+		if args == "broadcast" or args == "b" then
+			m.info( "Broadcasting alt list to all guild members." )
+			m.msg.send_alts()
+			return
+		end
+
+		if args == "versioncheck" or args == "vc" then
+			m.info( "Requesting version information." )
+			m.msg.version_check()
 			return
 		end
 		m.toggle_popup()
@@ -135,6 +154,7 @@ function GuildAlts.create_popup()
 
 		local text_alts = frame:CreateFontString( nil, "ARTWORK", "GameFontHighlightSmall" )
 		text_alts:SetPoint( "Right", frame, "Right", -5, 0 )
+		text_alts:SetWidth( 310 )
 		text_alts:SetHeight( 16 )
 		text_alts:SetJustifyH( "Right" )
 
