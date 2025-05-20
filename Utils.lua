@@ -42,6 +42,29 @@ function M.colorize_player_by_class( name, class )
 	return "|c" .. color.colorStr .. name .. "|r"
 end
 
+function M.get_server_timestamp()
+	local server_hour, server_min = GetGameTime()
+  local local_time = date("*t")
+
+	local t = {
+    year = local_time.year,
+    month = local_time.month,
+    day = local_time.day,
+    hour = server_hour,
+    min = server_min,
+    sec = 0,
+  }
+
+	local hour_diff = server_hour - local_time.hour
+	if hour_diff <= -20 then
+    t.day = t.day + 1
+  elseif hour_diff >= 20 then
+    t.day = t.day - 1
+  end
+
+	return time(t)
+end
+
 ---@param message string
 ---@param short boolean?
 function M.info( message, short )

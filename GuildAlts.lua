@@ -41,7 +41,7 @@ function GuildAlts.events:ADDON_LOADED()
 	m.db = GuildAltsDB
 	m.db.characters = m.db.characters or {}
 
-	if not m.db.last_update or m.db.last_update < time() - 3600 then
+	if not m.db.last_update or m.db.last_update < m.get_server_timestamp() - 3600 then
 		m.msg.request_alts()
 	end
 
@@ -482,7 +482,7 @@ function GuildAlts.update_character( character )
 		else
 			m.db.characters[ main ] = character[ main ]
 		end
-		m.db.last_update = time()
+		m.db.last_update = m.get_server_timestamp()
 	end
 
 	if m.popup and m.popup:IsVisible() then

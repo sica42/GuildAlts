@@ -145,7 +145,7 @@ function M.new()
 			for main, cdata in pairs( data ) do
 				m.db.characters[ main ] = cdata
 			end
-			m.db.last_update = time()
+			m.db.last_update = m.get_server_timestamp()
 		elseif command == MessageCommand.Ping then
 			--
 			-- Recive ping
