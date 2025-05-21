@@ -105,11 +105,13 @@ function GuildAlts.wrap_chat_frame( frame )
 	local original_add_message = frame[ "AddMessage" ]
 
 	frame[ "AddMessage" ] = function( self, msg, ... )
-		for alt, main in pairs( m.alt_map ) do
-			if alt ~= m.player then
-				msg = string.gsub( msg, "(.*)(|Hplayer:" .. alt .. "|h%[" .. alt .. "%]|h|r):(.*)", function( a, b, c )
-					return a .. b .. "(|cffffffff" .. main .. "|r):" .. c
-				end )
+		if msg then
+			for alt, main in pairs( m.alt_map ) do
+				if alt and alt ~= m.player then
+					msg = string.gsub( msg, "(.*)(|Hplayer:" .. alt .. "|h%[" .. alt .. "%]|h|r):(.*)", function( a, b, c )
+						return a .. b .. "(|cffeeeeee" .. main .. "|r):" .. c
+					end )
+				end
 			end
 		end
 
