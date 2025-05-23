@@ -44,25 +44,25 @@ end
 
 function M.get_server_timestamp()
 	local server_hour, server_min = GetGameTime()
-  local local_time = date("*t")
+	local local_time = date( "*t" )
 
 	local t = {
-    year = local_time.year,
-    month = local_time.month,
-    day = local_time.day,
-    hour = server_hour,
-    min = server_min,
-    sec = 0,
-  }
+		year = local_time.year,
+		month = local_time.month,
+		day = local_time.day,
+		hour = server_hour,
+		min = server_min,
+		sec = 0,
+	}
 
 	local hour_diff = server_hour - local_time.hour
 	if hour_diff <= -20 then
-    t.day = t.day + 1
-  elseif hour_diff >= 20 then
-    t.day = t.day - 1
-  end
+		t.day = t.day + 1
+	elseif hour_diff >= 20 then
+		t.day = t.day - 1
+	end
 
-	return time(t)
+	return time( t )
 end
 
 ---@param message string
@@ -107,4 +107,20 @@ function M.dump( o )
 
 	if (entries > 0) then s = s .. " " end
 	return s .. "}"
+end
+
+---@diagnostic disable-next-line: duplicate-set-field
+string.match = string.match or function( str, pattern )
+	if not str then return nil end
+
+	local _, _, r1, r2, r3, r4, r5, r6, r7, r8, r9 = string.find( str, pattern )
+	return r1, r2, r3, r4, r5, r6, r7, r8, r9
+end
+
+---@diagnostic disable-next-line: lowercase-global
+strtrim = strtrim or function( s )
+	if type( s ) ~= "string" then
+		return ""
+	end
+	return string.match(s, "^%s*(.-)%s*$" )
 end

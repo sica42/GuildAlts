@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: GuildAlts
 ## Author: Sica
-## Version: 0.4
+## Version: 0.5
 ## Notes: Manage guild alts and shows main character for alts in chat
 ## SavedVariablesPerCharacter: GuildAltsDB
 
