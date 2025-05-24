@@ -65,6 +65,13 @@ function GuildAlts.events:ADDON_LOADED()
 			return
 		end
 
+		if args == "clear" then
+			m.info( "Clearing and refreshing alt list." )
+			m.db.characters = {}
+			m.msg.request_alts()
+			return
+		end
+
 		if args == "refresh" or args == "r" then
 			m.info( "Refreshing alt list from other guild members." )
 			m.msg.request_alts()
