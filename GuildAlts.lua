@@ -41,7 +41,7 @@ function GuildAlts.events:ADDON_LOADED()
 	m.db = GuildAltsDB
 	m.db.characters = m.db.characters or {}
 
-	if not m.db.last_update or m.db.last_update < m.get_server_timestamp() - 3600 then
+	if not m.db.last_update or m.db.last_update < m.get_server_timestamp() - 300 then
 		m.msg.request_alts()
 	end
 
@@ -82,6 +82,7 @@ function GuildAlts.events:ADDON_LOADED()
 			m.msg.version_check()
 			return
 		end
+
 		m.toggle_popup()
 	end
 

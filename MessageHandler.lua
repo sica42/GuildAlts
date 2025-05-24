@@ -145,7 +145,9 @@ function M.new()
 			for main, cdata in pairs( data ) do
 				m.db.characters[ main ] = cdata
 			end
+
 			m.db.last_update = m.get_server_timestamp()
+			m.build_alt_map()
 		elseif command == MessageCommand.Ping then
 			--
 			-- Recive ping
@@ -158,7 +160,7 @@ function M.new()
 			--
 			-- Receive pong
 			--
-			if not best_ping or (data and data.last_update > best_ping.last_update) then
+			if not best_ping or (data and (data.last_update > best_ping.last_update or data.count > best_ping.count)) then
 				best_ping = {
 					player = sender,
 					count = data.count,
