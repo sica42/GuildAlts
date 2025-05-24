@@ -65,6 +65,17 @@ function M.get_server_timestamp()
 	return time( t )
 end
 
+---@param t table
+---@return number
+function M.count( t )
+	local count = 0
+	for _ in pairs( t ) do
+		count = count + 1
+	end
+
+	return count
+end
+
 ---@param message string
 ---@param short boolean?
 function M.info( message, short )
@@ -122,5 +133,5 @@ strtrim = strtrim or function( s )
 	if type( s ) ~= "string" then
 		return ""
 	end
-	return string.match(s, "^%s*(.-)%s*$" )
+	return string.match( s, "^%s*(.-)%s*$" )
 end

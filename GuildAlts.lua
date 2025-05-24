@@ -453,15 +453,15 @@ function GuildAlts.refresh( get_data )
 	local value = math.min( max, m.popup.scroll_bar:GetValue() )
 
 	if value == 0 then
-		_G[ "GuildAltsScrollBarScrollUpButton" ]:Disable()
+		m.api[ "GuildAltsScrollBarScrollUpButton" ]:Disable()
 	else
-		_G[ "GuildAltsScrollBarScrollUpButton" ]:Enable()
+		m.api[ "GuildAltsScrollBarScrollUpButton" ]:Enable()
 	end
 
 	if value == max then
-		_G[ "GuildAltsScrollBarScrollDownButton" ]:Disable()
+		m.api[ "GuildAltsScrollBarScrollDownButton" ]:Disable()
 	else
-		_G[ "GuildAltsScrollBarScrollDownButton" ]:Enable()
+		m.api[ "GuildAltsScrollBarScrollDownButton" ]:Enable()
 	end
 end
 
@@ -474,7 +474,7 @@ function GuildAlts.toggle_popup( show )
 		m.popup:Hide()
 	elseif show == true or (show == nil and not m.popup:IsVisible()) then
 		m.popup:Show()
-		m.refresh()
+		m.refresh( true )
 	end
 end
 

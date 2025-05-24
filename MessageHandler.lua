@@ -116,7 +116,7 @@ function M.new()
 		best_ping = nil
 
 		broadcast( MessageCommand.Ping, {
-			c = getn( m.db.characters )
+			c = m.count( m.db.characters )
 		} )
 	end
 
@@ -154,21 +154,21 @@ function M.new()
 			--
 			broadcast( MessageCommand.Pong, {
 				lu = m.db.last_update,
-				c = getn( m.db.characters )
+				c = m.count( m.db.characters )
 			} )
 		elseif command == MessageCommand.Pong and pinging then
 			--
 			-- Receive pong
 			--
-			if not best_ping or (data and (data.last_update > best_ping.last_update or data.count > best_ping.count)) then
+			if not best_ping or (data and ((data.last_update and data.last_update > best_ping.last_update) or (data.count and data.count > best_ping.count))) then
 				best_ping = {
 					player = sender,
-					count = data.count,
+					count = data.count or 0,
 					last_update = data.last_update or 0
 				}
 			end
 
-			if data and data.count < getn(m.db.characters) and not alts_sent then
+			if data and data.count < m.count( m.db.characters ) and not alts_sent then
 				alts_sent = true
 				send_alts()
 			end
@@ -177,7 +177,8 @@ function M.new()
 				M[ "ping_timer" ] = ace_timer.ScheduleTimer( M, function()
 					if pinging then
 						pinging = false
-						if best_ping.count and best_ping.count ~= getn( m.db.characters ) then
+						m.debug( "Fetching from " .. m.dump( best_ping ) )
+						if best_ping.count and best_ping.count ~= m.count( m.db.characters ) then
 							broadcast( MessageCommand.RequestAlts, { player = best_ping.player } )
 						else
 							m.debug( "Alt list is already up to date." )
