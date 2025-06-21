@@ -22,6 +22,10 @@ function GuildAlts:init()
 	for k, _ in pairs( m.events ) do
 		self.frame:RegisterEvent( k )
 	end
+
+	if m.api.IsAddOnLoaded( "pfUI" ) and m.api.pfUI and m.api.pfUI.api and m.api.pfUI.env and m.api.pfUI.env.C then
+		self.pfui_skin_enabled = true
+	end
 end
 
 function GuildAlts.events:ADDON_LOADED()
@@ -116,9 +120,15 @@ function GuildAlts.wrap_chat_frame( frame )
 		if msg then
 			for alt, main in pairs( m.alt_map ) do
 				if alt and alt ~= m.player then
-					msg = string.gsub( msg, "(.*)(|Hplayer:" .. alt .. "|h%[" .. alt .. "%]|h|r):(.*)", function( a, b, c )
-						return a .. b .. "(|cffeeeeee" .. main .. "|r):" .. c
-					end )
+					if m.pfui_skin_enabled then
+						msg = string.gsub( msg, "(.*)(|Hplayer:" .. alt .. "|h%[" .. alt .. "%]|h|r):(.*)", function( a, b, c )
+							return a .. b .. "(|cffeeeeee" .. main .. "|r):" .. c
+						end )
+					else
+						msg = string.gsub( msg, "(.*)(|Hplayer:" .. alt .. "|h%[" .. alt .. "%]|h):(.*)", function( a, b, c )
+							return a .. b .. "(|cffeeeeee" .. main .. "|r):" .. c
+						end )
+					end
 				end
 			end
 		end
