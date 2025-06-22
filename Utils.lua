@@ -120,6 +120,9 @@ function M.dump( o )
 	return s .. "}"
 end
 
+---@diagnostic disable-next-line: undefined-field
+if not string.gmatch then string.gmatch = string.gfind end
+
 ---@diagnostic disable-next-line: duplicate-set-field
 string.match = string.match or function( str, pattern )
 	if not str then return nil end
