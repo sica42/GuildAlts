@@ -120,7 +120,7 @@ function GuildAlts.wrap_chat_frame( frame )
 		if msg then
 			for alt, main in pairs( m.alt_map ) do
 				if alt and alt ~= m.player then
-					msg = string.gsub( msg, "(.?|Hplayer:" .. alt .. ".*%]|?h?|?r?)(.*)", function( a, b)
+					msg = string.gsub( msg, "(.?|Hplayer:" .. alt .. ".-%]|?h?|?r?)(.*)", function( a, b)
 						return a .. "(|cffeeeeee" .. main .. "|r)" .. b
 					end )
 				end
